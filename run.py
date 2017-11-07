@@ -242,6 +242,7 @@ def algorithm(pop,toolbox,stats,hof):
         cxpb=CXPB, mutpb=MUTPB, ngen=FREQ,verbose=VERBOSE,stats=stats,halloffame=hof)
 
 def beforeMigration(ga):
+    saveHOF(ga.hof,ga.gen)
     return
 
 def afterMigration(ga):
@@ -259,14 +260,14 @@ def afterMigration(ga):
         file_.write(outFile)
     return
 
-def saveHOF(hof):
+def saveHOF(hof,code):
     i = 0
     for ind in hof:
         i+=1
         phenome = NanoParticlePhenome(ind,8,8,0,10)
         np = phenome.particle
         sim = MembraneSimulation(
-            'hof_'+str(i),
+            'hof_'+str(code)+'_'+str(i),
             np,
             250000,
             0.01,
@@ -294,7 +295,7 @@ def main():
         genomeSize = GENOMESIZE,
         islePop = ISLESIZE,
         hofSize = HOFSIZE,
-        evaluate = performanceTest,
+        evaluate = evaluate,
         sel = sel,
         net = network,
         subroutine = algorithm,
@@ -309,7 +310,7 @@ def main():
     #print(results[0][0][0])
     saveMetrics(results[-1])
 
-    #saveHOF(results[1])
+    saveHOF(results[1],str(NGEN))
 
 
 if __name__ == "__main__":
